@@ -28,6 +28,14 @@ public class NewPassword {
         return newPassword;
     }
 
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
