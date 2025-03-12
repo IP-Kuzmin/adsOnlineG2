@@ -28,7 +28,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<User> getUser() {
 
-        User user = new User();
+        User user = new User(123, "kakaha@mail.ru", "Олег", "Олегов", "+7123456787", "пользователь", "ссылка");
         return ResponseEntity.ok(user);
     }
 
@@ -36,7 +36,7 @@ public class UserController {
     @PatchMapping("/me")
     public ResponseEntity<UpdateUser> updateUser(@RequestBody UpdateUser updateUser) {
 
-        User updatedUser = new User();
+        User updatedUser = new User(123, "kakaha@mail.ru", "Олег", "Олегов", "+7123456787", "пользователь", "ссылка");
         return ResponseEntity.ok(updateUser);
     }
 
