@@ -1,10 +1,12 @@
 package ru.skypro.homework.models.ads;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
+@Getter
 public class CreateOrUpdateAd {
 
     @Schema(description = "заголовок объявления")
@@ -23,18 +25,6 @@ public class CreateOrUpdateAd {
         this.title = title;
         this.price = price;
         this.description = description;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     @Override

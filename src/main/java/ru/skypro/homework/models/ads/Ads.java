@@ -1,10 +1,12 @@
 package ru.skypro.homework.models.ads;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Objects;
 
+@Getter
 public class Ads {
 
     @Schema(description = "общее количество объявлений", example = "100")
@@ -16,14 +18,6 @@ public class Ads {
     public Ads(Integer count, List<Ad> results) {
         this.count = count;
         this.results = results;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public List<Ad> getResults() {
-        return results;
     }
 
     @Override

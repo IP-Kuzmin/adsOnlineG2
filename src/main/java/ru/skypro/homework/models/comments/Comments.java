@@ -1,10 +1,12 @@
 package ru.skypro.homework.models.comments;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Objects;
 
+@Getter
 public class Comments {
 
     @Schema(description = "Общее количество комментариев", example = "10")
@@ -16,14 +18,6 @@ public class Comments {
     public Comments(Integer count, List<Comment> results) {
         this.count = count;
         this.results = results;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public List<Comment> getResults() {
-        return results;
     }
 
     @Override

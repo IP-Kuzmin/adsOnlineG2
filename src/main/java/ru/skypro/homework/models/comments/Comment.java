@@ -1,9 +1,11 @@
 package ru.skypro.homework.models.comments;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
 import java.util.Objects;
 
+@Getter
 public class Comment {
 
     @Schema(description = "id автора комментария")
@@ -31,30 +33,6 @@ public class Comment {
         this.createdAt = createdAt;
         this.pk = pk;
         this.text = text;
-    }
-
-    public Integer getAuthor() {
-        return author;
-    }
-
-    public String getAuthorImage() {
-        return authorImage;
-    }
-
-    public String getAuthorFirstName() {
-        return authorFirstName;
-    }
-
-    public Long getCreatedAt() {
-        return createdAt;
-    }
-
-    public Integer getPk() {
-        return pk;
-    }
-
-    public String getText() {
-        return text;
     }
 
     @Override

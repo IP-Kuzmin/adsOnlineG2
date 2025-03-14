@@ -1,9 +1,11 @@
 package ru.skypro.homework.models.ads;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
 import java.util.Objects;
 
+@Getter
 public class Ad {
 
     @Schema(description = "id автора объявления")
@@ -27,26 +29,6 @@ public class Ad {
         this.pk = pk;
         this.price = price;
         this.title = title;
-    }
-
-    public Integer getAuthor() {
-        return author;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public Integer getPk() {
-        return pk;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     @Override

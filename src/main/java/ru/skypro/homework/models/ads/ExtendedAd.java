@@ -1,13 +1,14 @@
 package ru.skypro.homework.models.ads;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
 import java.util.Objects;
 
-//расширенное объявление
+@Getter
 public class ExtendedAd {
 
-    @Schema(description = "ID объявления", required = true, example = "1")
+    @Schema(description = "ID объявления", example = "1")
     private Integer pk;
 
     @Schema(description = "Имя автора объявления")
@@ -44,42 +45,6 @@ public class ExtendedAd {
         this.phone = phone;
         this.price = price;
         this.title = title;
-    }
-
-    public String getAuthorFirstName() {
-        return authorFirstName;
-    }
-
-    public String getAuthorLastName() {
-        return authorLastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public Integer getPk() {
-        return pk;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     @Override

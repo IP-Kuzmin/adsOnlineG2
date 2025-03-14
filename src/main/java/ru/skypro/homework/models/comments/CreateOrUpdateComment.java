@@ -1,10 +1,12 @@
 package ru.skypro.homework.models.comments;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
+@Getter
 public class CreateOrUpdateComment {
 
     @Schema(description = "текст комментария")
@@ -13,10 +15,6 @@ public class CreateOrUpdateComment {
 
     public CreateOrUpdateComment(String text) {
         this.text = text;
-    }
-
-    public String getText() {
-        return text;
     }
 
     @Override
