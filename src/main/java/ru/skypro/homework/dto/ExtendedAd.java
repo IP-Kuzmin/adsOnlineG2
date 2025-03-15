@@ -34,5 +34,6 @@ public class ExtendedAd {
 
     @Schema(description = "Заголовок объявления", example = "Продам велосипед")
     private String title;
+
 }
 
