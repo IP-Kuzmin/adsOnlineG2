@@ -1,45 +1,41 @@
 package ru.skypro.homework.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.skypro.homework.models.comments.Comment;
-import ru.skypro.homework.repository.CommentRepository;
+import ru.skypro.homework.dto.*;
+import ru.skypro.homework.service.CommentService;
 
-import java.util.List;
+import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/ads")
+@RequestMapping("/ads/{adId}/comments")
 public class CommentController {
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentService commentService;
 
-    @GetMapping("/{id}/comments")
-    public ResponseEntity<List<Comment>> getComments(@PathVariable("id") Integer adId) {
-
-        return ResponseEntity.ok().build();
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
     }
 
-    @PostMapping("/{id}/comments")
-    public ResponseEntity<Comment> addComment(@PathVariable("id") Integer adId,
-                                              @RequestBody Comment comment) {
-
-        return ResponseEntity.ok().build();
+    @GetMapping
+    public ResponseEntity<Comments> getComments(@PathVariable Integer adId) {
+        return ResponseEntity.ok(commentService.getCommentsByAdId(adId));
     }
 
-    @DeleteMapping("/{adId}/comments/{commentId}")
-    public ResponseEntity<Comment> deleteComment(@PathVariable("adId") Integer adId,
-                                                 @PathVariable("commentId") Integer commentId) {
+    @PostMapping
+    public ResponseEntity<Comment> addComment(@PathVariable Integer adId, @RequestBody @Valid CreateOrUpdateComment comment) {
+        return ResponseEntity.ok(commentService.addComment(adId, comment));
+    }
 
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<Comment> updateComment(@PathVariable Integer adId, @PathVariable Integer commentId,
+                                                 @RequestBody @Valid CreateOrUpdateComment comment) {
+        return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment));
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId) {
+        commentService.deleteComment(adId, commentId);
         return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{adId}/comments/{commentId}")
-    public ResponseEntity<Comment> updateComment(@PathVariable("adId") Integer adId,
-                                                 @PathVariable("commentId") Integer commentId,
-                                                 @RequestBody Comment updatedComment) {
-
-        return ResponseEntity.ok().build();
     }
 }

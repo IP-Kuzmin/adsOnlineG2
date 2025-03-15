@@ -1,47 +1,41 @@
 package ru.skypro.homework.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.models.user.NewPassword;
-import ru.skypro.homework.models.user.UpdateUser;
-import ru.skypro.homework.models.user.User;
-import ru.skypro.homework.repository.UserRepository;
+import ru.skypro.homework.dto.*;
+import ru.skypro.homework.service.UserService;
 
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserService userService;
 
-    // Обновление пароля
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     @PostMapping("/set_password")
-    public ResponseEntity<Void> setPassword(@RequestBody NewPassword newPassword) {
-
+    public ResponseEntity<Void> setPassword(@RequestBody @Valid NewPassword newPassword) {
+        userService.setPassword(newPassword);
         return ResponseEntity.ok().build();
     }
 
-    //Получение информации об авторизованном пользователе
     @GetMapping("/me")
-    public ResponseEntity<User> getUser() {
-
-        User user = new User(123, "kakaha@mail.ru", "Олег", "Олегов", "+7123456787", "пользователь", "ссылка");
-        return ResponseEntity.ok(user);
+    public ResponseEntity<User> getUserInfo() {
+        return ResponseEntity.ok(userService.getCurrentUser());
     }
 
-    //Обновление информации об авторизованном пользователе
     @PatchMapping("/me")
-    public ResponseEntity<UpdateUser> updateUser(@RequestBody UpdateUser updateUser) {
-
-        User updatedUser = new User(123, "kakaha@mail.ru", "Олег", "Олегов", "+7123456787", "пользователь", "ссылка");
-        return ResponseEntity.ok(updateUser);
+    public ResponseEntity<User> updateUserInfo(@RequestBody @Valid UpdateUser updateUser) {
+        return ResponseEntity.ok(userService.updateUser(updateUser));
     }
 
-    public ResponseEntity<Void> updateUserAvatar(@RequestParam("image") MultipartFile image) {
-
+    @PatchMapping("/me/image")
+    public ResponseEntity<Void> updateUserImage(@RequestBody MeImageBody imageBody) {
+        userService.updateUserImage(imageBody);
         return ResponseEntity.ok().build();
     }
 }
