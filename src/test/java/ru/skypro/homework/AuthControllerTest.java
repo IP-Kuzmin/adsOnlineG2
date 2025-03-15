@@ -42,7 +42,6 @@ class AuthControllerTest {
                 .andExpect(status().isCreated());
     }
 
-    // ❌ Регистрация с некорректными данными
     @Test
     void shouldReturn400ForInvalidRegister() throws Exception {
         Register register = new Register(
@@ -60,7 +59,6 @@ class AuthControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    // ✅ Успешная авторизация
     @Test
     void shouldLoginUser() throws Exception {
         Login login = new Login("user@example.com", "password");
@@ -71,7 +69,6 @@ class AuthControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // ❌ Авторизация с неверным паролем
     @Test
     void shouldReturn401ForInvalidLogin() throws Exception {
         Login login = new Login("user@example.com", "wrongpassword");
@@ -82,7 +79,6 @@ class AuthControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    // ❌ Авторизация с отсутствующим пользователем
     @Test
     void shouldReturn401ForNonExistentUser() throws Exception {
         Login login = new Login("nonexistent@example.com", "password");
