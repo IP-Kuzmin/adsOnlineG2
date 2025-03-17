@@ -10,7 +10,7 @@ import java.util.Collections;
 public class AdServiceImpl implements AdService {
 
     @Override
-    public Ads getAllAds() {
+    public Ads getAdsCount() {
         return new Ads(0, Collections.emptyList());
     }
 
@@ -46,12 +46,12 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public Ads getUserAds() {
+    public Ads getUserAdsCount() {
         return new Ads(0, Collections.emptyList());
     }
 
     @Override
-    public void updateAdImage(Integer id, IdImageBody imageBody) {
+    public void updateAdImage(Integer id, AdsImage imageBody) {
         // Пустой метод для тестов
     }
 }

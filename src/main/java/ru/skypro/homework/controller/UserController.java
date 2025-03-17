@@ -14,6 +14,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/users")
 @Tag(name = "Пользователи")
+@CrossOrigin(value = "http://localhost:3000")
 public class UserController {
 
     private final UserService userService;
@@ -32,7 +33,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Пользователь не авторизован"),
             @ApiResponse(responseCode = "403", description = "Доступ запрещён")
     })
-    public ResponseEntity<Void> setPassword(@RequestBody @Valid NewPassword newPassword) {
+    public ResponseEntity<Void> setPassword(@RequestBody @Valid ChangeAndNewPassword newPassword) {
         userService.setPassword(newPassword);
         return ResponseEntity.ok().build();
     }
@@ -72,7 +73,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Изображение успешно обновлено"),
             @ApiResponse(responseCode = "401", description = "Пользователь не авторизован")
     })
-    public ResponseEntity<Void> updateUserImage(@RequestBody MeImageBody imageBody) {
+    public ResponseEntity<Void> updateUserImage(@RequestBody AvatarImage imageBody) {
         userService.updateUserImage(imageBody);
         return ResponseEntity.ok().build();
     }

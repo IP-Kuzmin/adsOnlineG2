@@ -11,6 +11,7 @@ import ru.skypro.homework.service.AuthService;
 import javax.validation.Valid;
 
 @RestController
+@CrossOrigin(value = "http://localhost:3000")
 public class AuthController {
 
     private final AuthService authService;

@@ -14,6 +14,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/ads")
 @Tag(name = "Объявления", description = "Управление объявлениями: добавление, редактирование, получение и удаление объявлений")
+@CrossOrigin(value = "http://localhost:3000")
 public class AdController {
 
     private final AdService adService;
@@ -28,7 +29,7 @@ public class AdController {
     })
     @GetMapping
     public ResponseEntity<Ads> getAllAds() {
-        return ResponseEntity.ok(adService.getAllAds());
+        return ResponseEntity.ok(adService.getAdsCount());
     }
 
     @Operation(summary = "Добавление нового объявления", description = "Позволяет пользователю добавить новое объявление с указанием заголовка, описания и цены.")
@@ -82,7 +83,7 @@ public class AdController {
             @ApiResponse(responseCode = "401", description = "Пользователь не авторизован")
     })
     public ResponseEntity<Ads> getMyAds() {
-        return ResponseEntity.ok(adService.getUserAds());
+        return ResponseEntity.ok(adService.getUserAdsCount());
     }
 
     @PatchMapping("/{id}/image")
@@ -92,7 +93,7 @@ public class AdController {
             @ApiResponse(responseCode = "404", description = "Объявление с таким ID не найдено"),
             @ApiResponse(responseCode = "401", description = "Пользователь не авторизован")
     })
-    public ResponseEntity<Void> updateAdImage(@PathVariable Integer id, @RequestBody IdImageBody imageBody) {
+    public ResponseEntity<Void> updateAdImage(@PathVariable Integer id, @RequestBody AdsImage imageBody) {
         adService.updateAdImage(id, imageBody);
         return ResponseEntity.ok().build();
     }

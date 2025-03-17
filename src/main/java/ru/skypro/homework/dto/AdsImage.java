@@ -1,12 +1,12 @@
 package ru.skypro.homework.dto;
 
-import lombok.*;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdsBody {
-    @Schema(description = "ID объявления")
+public class AdsImage {
+    @Schema(description = "ID изображения", example = "123")
     private Integer id;
 }

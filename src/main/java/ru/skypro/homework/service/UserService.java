@@ -1,16 +1,16 @@
 package ru.skypro.homework.service;
 
-import ru.skypro.homework.dto.MeImageBody;
-import ru.skypro.homework.dto.NewPassword;
+import ru.skypro.homework.dto.AvatarImage;
+import ru.skypro.homework.dto.ChangeAndNewPassword;
 import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.User;
 
 public interface UserService {
-    void setPassword(NewPassword newPassword);
+    void setPassword(ChangeAndNewPassword newPassword);
 
     User getCurrentUser();
 
     User updateUser(UpdateUser updateUser);
 
-    void updateUserImage(MeImageBody imageBody);
+    void updateUserImage(AvatarImage imageBody);
 }

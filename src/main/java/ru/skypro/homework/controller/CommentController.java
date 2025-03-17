@@ -13,7 +13,8 @@ import javax.validation.Valid;
 
 @RestController
 @Tag(name = "Комментарии", description = "Управление комментариями к объявлениям")
-@RequestMapping("/ads/{adId}/comments")
+@RequestMapping("/ads")
+@CrossOrigin(value = "http://localhost:3000")
 public class CommentController {
 
     private final CommentService commentService;
@@ -27,7 +28,7 @@ public class CommentController {
             @ApiResponse(responseCode = "200", description = "Комментарии успешно получены"),
             @ApiResponse(responseCode = "404", description = "Объявление не найдено")
     })
-    @GetMapping
+    @GetMapping("/{adId}/comments")
     public ResponseEntity<Comments> getComments(@PathVariable Integer adId) {
         return ResponseEntity.ok(commentService.getCommentsByAdId(adId));
     }
@@ -38,7 +39,7 @@ public class CommentController {
             @ApiResponse(responseCode = "400", description = "Некорректные данные для добавления комментария"),
             @ApiResponse(responseCode = "404", description = "Объявление не найдено")
     })
-    @PostMapping
+    @PostMapping("/{adId}/comments")
     public ResponseEntity<Comment> addComment(@PathVariable Integer adId, @RequestBody @Valid CreateOrUpdateComment comment) {
         return ResponseEntity.ok(commentService.addComment(adId, comment));
     }
@@ -49,7 +50,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Комментарий или объявление не найдено"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные для обновления комментария")
     })
-    @PatchMapping("/{commentId}")
+    @PatchMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<Comment> updateComment(@PathVariable Integer adId, @PathVariable Integer commentId,
                                                  @RequestBody @Valid CreateOrUpdateComment comment) {
         return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment));
@@ -60,7 +61,7 @@ public class CommentController {
             @ApiResponse(responseCode = "204", description = "Комментарий успешно удалён"),
             @ApiResponse(responseCode = "404", description = "Комментарий или объявление не найдено")
     })
-    @DeleteMapping("/{commentId}")
+    @DeleteMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId) {
         commentService.deleteComment(adId, commentId);
         return ResponseEntity.noContent().build();

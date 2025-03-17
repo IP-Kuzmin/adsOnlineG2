@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.skypro.homework.dto.NewPassword;
+import ru.skypro.homework.dto.ChangeAndNewPassword;
 import ru.skypro.homework.dto.UpdateUser;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -56,7 +56,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldChangePassword() throws Exception {
-        NewPassword newPassword = new NewPassword("oldPass123", "newPass123");
+        ChangeAndNewPassword newPassword = new ChangeAndNewPassword("oldPass123", "newPass123");
 
         mockMvc.perform(post("/users/set_password")
                         .contentType(MediaType.APPLICATION_JSON)
