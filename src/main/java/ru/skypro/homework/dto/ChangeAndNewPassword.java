@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewPassword {
+public class ChangeAndNewPassword {
     @Schema(description = "Текущий пароль", example = "oldPassword123")
     private String currentPassword;
 

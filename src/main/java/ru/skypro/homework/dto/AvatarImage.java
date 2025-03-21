@@ -6,7 +6,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdImageBody {
-    @Schema(description = "ID изображения", example = "123")
-    private Integer id;
+public class AvatarImage {
+    @Schema(description = "Ссылка на изображение профиля")
+    private String image;
 }
