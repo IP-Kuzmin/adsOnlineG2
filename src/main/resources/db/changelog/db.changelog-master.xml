@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <include file="db/changelog/db.changelog-models.xml"/>
+    <include file="db/changelog/db.changelog-demo-data.xml"/>
+    <changeSet id="adjust-sequences" author="idol696">
+        <sqlFile path="db/changelog/update-sequences.sql" endDelimiter=";" splitStatements="true"/>
+    </changeSet>
+    <include file="db/changelog/db.changelog-models-correct.xml"/>
+</databaseChangeLog>

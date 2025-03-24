@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.service.AdService;
 
@@ -38,9 +39,12 @@ public class AdController {
             @ApiResponse(responseCode = "400", description = "Некорректные данные для создания объявления"),
             @ApiResponse(responseCode = "401", description = "Пользователь не авторизован")
     })
-    @PostMapping
-    public ResponseEntity<Ad> addAd(@RequestBody @Valid CreateOrUpdateAd ad) {
-        return ResponseEntity.status(201).body(adService.createAd(ad));
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<Ad> addAd(
+            @RequestPart("properties") @Valid CreateOrUpdateAd ad,
+            @RequestPart("image") MultipartFile image
+    ) {
+        return ResponseEntity.status(201).body(adService.createAd(ad, image));
     }
 
     @Operation(summary = "Получение объявления по ID", description = "Возвращает подробную информацию о конкретном объявлении по его ID.")
@@ -86,15 +90,16 @@ public class AdController {
         return ResponseEntity.ok(adService.getUserAdsCount());
     }
 
-    @PatchMapping("/{id}/image")
+    @PatchMapping(value = "/{id}/image", consumes = {"multipart/form-data"})
     @Operation(summary = "Обновление изображения объявления", description = "Позволяет обновить изображение, связанное с конкретным объявлением.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Изображение объявления успешно обновлено"),
             @ApiResponse(responseCode = "404", description = "Объявление с таким ID не найдено"),
             @ApiResponse(responseCode = "401", description = "Пользователь не авторизован")
     })
-    public ResponseEntity<Void> updateAdImage(@PathVariable Integer id, @RequestBody AdsImage imageBody) {
-        adService.updateAdImage(id, imageBody);
+    public ResponseEntity<Void> updateAdImage(@PathVariable Integer id,
+                                              @RequestPart("image") MultipartFile image) {
+        adService.updateAdImage(id, image);
         return ResponseEntity.ok().build();
     }
 }

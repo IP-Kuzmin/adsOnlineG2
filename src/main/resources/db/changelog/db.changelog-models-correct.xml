@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="6-add-ad-fk-to-comments" author="idol696">
+        <addColumn tableName="comments">
+            <column name="ad_id" type="BIGINT"/>
+        </addColumn>
+
+        <addForeignKeyConstraint
+            baseTableName="comments"
+            baseColumnNames="ad_id"
+            constraintName="fk_comments_ad_id"
+            referencedTableName="ads"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>
