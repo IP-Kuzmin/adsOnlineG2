@@ -1,6 +1,9 @@
 package ru.skypro.homework.filter;
 
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNullApi;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,5 +23,25 @@ public class BasicAuthCorsFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         httpServletResponse.addHeader("Access-Control-Allow-Credentials", "true");
         filterChain.doFilter(httpServletRequest, httpServletResponse);
+    }
+
+    @Component
+    @RequiredArgsConstructor
+    @Slf4j
+    public static class RequestLoggingFilter extends OncePerRequestFilter {
+
+        @Override
+        protected void doFilterInternal(
+                HttpServletRequest request,
+                HttpServletResponse response,
+                FilterChain filterChain) throws ServletException, IOException {
+
+            log.info("REQUEST {} {}", request.getMethod(), request.getRequestURI());
+            request.getHeaderNames().asIterator().forEachRemaining(
+                    name -> log.debug("{}: {}", name, request.getHeader(name))
+            );
+
+            filterChain.doFilter(request, response);
+        }
     }
 }
