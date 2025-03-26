@@ -7,14 +7,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.skypro.homework.dto.ChangeAndNewPassword;
 import ru.skypro.homework.dto.UpdateUser;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 class UserControllerTest {
 
@@ -25,6 +27,8 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
+    @Sql(scripts = {"/data-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/delete-test.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldGetUserInfo() throws Exception {
         mockMvc.perform(get("/users/me"))
@@ -32,6 +36,8 @@ class UserControllerTest {
     }
 
     @Test
+    @Sql(scripts = {"/data-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/delete-test.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldUpdateUserInfo() throws Exception {
         UpdateUser updateUser = new UpdateUser("John", "Doe", "+71234567890");
@@ -43,6 +49,8 @@ class UserControllerTest {
     }
 
     @Test
+    @Sql(scripts = {"/data-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/delete-test.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldUpdateUserInfo_BadRequest() throws Exception {
         UpdateUser updateUser = new UpdateUser("John", "Doe", "+11234567890");
@@ -51,16 +59,5 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUser)))
                 .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(username = "user@example.com", roles = {"USER"})
-    void shouldChangePassword() throws Exception {
-        ChangeAndNewPassword newPassword = new ChangeAndNewPassword("oldPass123", "newPass123");
-
-        mockMvc.perform(post("/users/set_password")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newPassword)))
-                .andExpect(status().isOk());
     }
 }

@@ -1,0 +1,75 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <!--  USERS  -->
+    <changeSet id="1-create-users" author="idol696">
+        <createTable tableName="users">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="first_name" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image" type="VARCHAR(512)"/>
+            <column name="password" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--  ADS  -->
+    <changeSet id="2-create-ads" author="idol696">
+        <createTable tableName="ads">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="author_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image" type="VARCHAR(512)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="3-add-fk-ads-author" author="idol696">
+        <addForeignKeyConstraint baseTableName="ads" baseColumnNames="author_id" constraintName="fk_ads_author_id" referencedTableName="users" referencedColumnNames="id" onDelete="CASCADE"/>
+    </changeSet>
+    <!--  COMMENTS  -->
+    <changeSet id="4-create-comments" author="idol696">
+        <createTable tableName="comments">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="author_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_image" type="VARCHAR(512)"/>
+            <column name="author_first_name" type="VARCHAR(64)"/>
+            <column name="created_at" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="5-add-fk-comments-author" author="idol696">
+        <addForeignKeyConstraint baseTableName="comments" baseColumnNames="author_id" constraintName="fk_comments_author_id" referencedTableName="users" referencedColumnNames="id" onDelete="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

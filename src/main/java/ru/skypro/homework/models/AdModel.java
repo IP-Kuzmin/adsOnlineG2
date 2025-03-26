@@ -1,14 +1,10 @@
 package ru.skypro.homework.models;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Entity
 @Table(name = "ads")
@@ -19,8 +15,9 @@ public class AdModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false)
     @Schema(description = "ID объявления")
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
@@ -28,7 +25,8 @@ public class AdModel {
     private UserModel author;
 
     @NotBlank
-    @Column(nullable = false)
+    @Size(max = 32)
+    @Column(nullable = false, length = 32)
     @Schema(description = "Заголовок объявления")
     private String title;
 
@@ -38,10 +36,11 @@ public class AdModel {
     private Integer price;
 
     @Size(min = 8, max = 64)
-    @Column(length = 64)
+    @Column(nullable = false, length = 64)
     @Schema(description = "Описание объявления")
     private String description;
 
+    @Column(length = 512)
     @Schema(description = "Ссылка на изображение объявления")
     private String image;
 }

@@ -5,11 +5,11 @@ import ru.skypro.homework.dto.Comments;
 import ru.skypro.homework.dto.CreateOrUpdateComment;
 
 public interface CommentService {
-    Comments getCommentsByAdId(Integer adId);
+    Comments getCommentsByAdId(Long adId);
 
-    Comment addComment(Integer adId, CreateOrUpdateComment comment);
+    Comment addComment(Long adId, CreateOrUpdateComment comment);
 
-    Comment updateComment(Integer adId, Integer commentId, CreateOrUpdateComment comment);
+    Comment updateComment(Long adId, Long commentId, CreateOrUpdateComment comment);
 
-    void deleteComment(Integer adId, Integer commentId);
+    void deleteComment(Long adId, Long commentId);
 }
