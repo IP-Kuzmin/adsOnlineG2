@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 public class Ad {
 
-    @Schema(description = "ID объявления (primary key)")
+    @Schema(description = "ID объявления")
     private Integer pk;
 
     @Schema(description = "ID автора")

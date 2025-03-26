@@ -9,7 +9,7 @@ public interface CommentMapper {
 
     @Mapping(source = "id", target = "pk", numberFormat = "#")
     @Mapping(source = "author.id", target = "author")
-    @Mapping(source = "authorImage", target = "authorImage")
+    @Mapping(source = "author.image", target = "authorImage")
     @Mapping(source = "authorFirstName", target = "authorFirstName")
     @Mapping(source = "createdAt", target = "createdAt")
     @Mapping(source = "text", target = "text")

@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.skypro.homework.dto.CreateOrUpdateComment;
 
@@ -14,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 class CommentControllerTest {
 
@@ -55,7 +57,7 @@ class CommentControllerTest {
     @Test
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldDeleteComment() throws Exception {
-        mockMvc.perform(delete("/ads/1/comments/1"))
+        mockMvc.perform(delete("/ads/10/comments/1"))
                 .andExpect(status().isNoContent());
     }
 }

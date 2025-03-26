@@ -17,10 +17,10 @@ public class Comment {
     @Schema(description = "Имя автора комментария")
     private String authorFirstName;
 
-    @Schema(description = "Дата создания комментария (timestamp в мс)")
+    @Schema(description = "Дата создания комментария")
     private Long createdAt;
 
-    @Schema(description = "ID комментария (primary key)")
+    @Schema(description = "ID комментария")
     private Integer pk;
 
     @Schema(description = "Текст комментария")

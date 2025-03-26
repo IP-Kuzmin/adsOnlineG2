@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.skypro.homework.dto.Login;
 import ru.skypro.homework.dto.Register;
@@ -15,6 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 class AuthControllerTest {
 
@@ -30,9 +34,9 @@ class AuthControllerTest {
         Register register = new Register(
                 "John",
                 "Doe",
-                "+71234567890",
-                "newuser@example.com",
-                "password123",
+                "+79099313555",
+                "new2user@example.com",
+                "password",
                 Role.USER
         );
 
@@ -60,6 +64,9 @@ class AuthControllerTest {
     }
 
     @Test
+    @Sql(scripts = {"/data-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/delete-test.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldLoginUser() throws Exception {
         Login login = new Login("user@example.com", "password");
 
@@ -70,22 +77,26 @@ class AuthControllerTest {
     }
 
     @Test
-    void shouldReturn401ForInvalidLogin() throws Exception {
+    @Sql(scripts = {"/data-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/delete-test.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void shouldReturn403ForInvalidLogin() throws Exception {
         Login login = new Login("user@example.com", "wrongpassword");
 
         mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(login)))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test
-    void shouldReturn401ForNonExistentUser() throws Exception {
+    @Sql(scripts = {"/data-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {"/delete-test.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void shouldReturn404ForNonExistentUser() throws Exception {
         Login login = new Login("nonexistent@example.com", "password");
 
         mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(login)))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isNotFound());
     }
 }

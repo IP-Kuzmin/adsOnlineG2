@@ -29,7 +29,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Объявление не найдено")
     })
     @GetMapping("/{adId}/comments")
-    public ResponseEntity<Comments> getComments(@PathVariable Integer adId) {
+    public ResponseEntity<Comments> getComments(@PathVariable Long adId) {
         return ResponseEntity.ok(commentService.getCommentsByAdId(adId));
     }
 
@@ -40,7 +40,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Объявление не найдено")
     })
     @PostMapping("/{adId}/comments")
-    public ResponseEntity<Comment> addComment(@PathVariable Integer adId, @RequestBody @Valid CreateOrUpdateComment comment) {
+    public ResponseEntity<Comment> addComment(@PathVariable Long adId, @RequestBody @Valid CreateOrUpdateComment comment) {
         return ResponseEntity.ok(commentService.addComment(adId, comment));
     }
 
@@ -51,7 +51,7 @@ public class CommentController {
             @ApiResponse(responseCode = "400", description = "Некорректные данные для обновления комментария")
     })
     @PatchMapping("/{adId}/comments/{commentId}")
-    public ResponseEntity<Comment> updateComment(@PathVariable Integer adId, @PathVariable Integer commentId,
+    public ResponseEntity<Comment> updateComment(@PathVariable Long adId, @PathVariable Long commentId,
                                                  @RequestBody @Valid CreateOrUpdateComment comment) {
         return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment));
     }
@@ -62,7 +62,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Комментарий или объявление не найдено")
     })
     @DeleteMapping("/{adId}/comments/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId) {
+    public ResponseEntity<Void> deleteComment(@PathVariable Long adId, @PathVariable Long commentId) {
         commentService.deleteComment(adId, commentId);
         return ResponseEntity.noContent().build();
     }

@@ -24,7 +24,7 @@ public interface AdMapper {
     @Mapping(source = "author.lastName", target = "authorLastName")
     @Mapping(source = "author.email", target = "email")
     @Mapping(source = "author.phone", target = "phone")
-    @Mapping(source = "author.image", target = "image")
+    @Mapping(source = "image", target = "image")
     ExtendedAd toExtendedDto(AdModel model);
 
     // CreateOrUpdateAd в AdModel

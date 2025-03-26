@@ -8,13 +8,13 @@ public interface AdService {
 
     Ad createAd(CreateOrUpdateAd ad, MultipartFile image);
 
-    ExtendedAd getAdById(Integer id);
+    ExtendedAd getAdById(Long id);
 
-    Ad updateAd(Integer id, CreateOrUpdateAd ad);
+    Ad updateAd(Long id, CreateOrUpdateAd ad);
 
-    void deleteAd(Integer id);
+    void deleteAd(Long id);
 
     Ads getUserAdsCount();
 
-    void updateAdImage(Integer id, MultipartFile image);
+    void updateAdImage(Long id, MultipartFile image);
 }
