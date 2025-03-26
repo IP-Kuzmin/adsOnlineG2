@@ -26,5 +26,6 @@ CREATE TABLE comments (
     author_first_name VARCHAR(64),
     created_at BIGINT NOT NULL,
     text VARCHAR(64) NOT NULL,
+    ad_id BIGINT NOT NULL,
     CONSTRAINT fk_comments_author_id FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );

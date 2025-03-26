@@ -9,7 +9,7 @@ VALUES
 (11, 10, 'New Laptop', 1500, 'Barely used', '/images/ads/2.jpg');
 
 -- COMMENTS
-INSERT INTO comments (author_id, author_image, author_first_name, created_at, text)
+INSERT INTO comments (id,author_id, author_image, author_first_name, created_at, text, ad_id)
 VALUES
-(10, '/images/avatars/1.jpg', 'John', 1711373600000, 'Отличный велосипед!'),
-(10, '/images/avatars/1.jpg', 'John', 1711374600000, 'А есть скидка?');
+(10,10, '/images/avatars/1.jpg', 'John', 1711373600000, 'Отличный велосипед!', 10),
+(11,10, '/images/avatars/1.jpg', 'John', 1711374600000, 'А есть скидка?',10);
