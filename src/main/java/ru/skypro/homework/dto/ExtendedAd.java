@@ -8,30 +8,32 @@ import lombok.*;
 @AllArgsConstructor
 public class ExtendedAd {
 
-    @Schema(description = "ID объявления")
+    @Schema(description = "ID объявления", example = "1")
     private Integer pk;
 
-    @Schema(description = "Имя автора объявления")
+    @Schema(description = "Имя автора", example = "Ivan")
     private String authorFirstName;
 
-    @Schema(description = "Фамилия автора объявления")
+    @Schema(description = "Фамилия автора", example = "Ivanov")
     private String authorLastName;
 
     @Schema(description = "Описание объявления")
     private String description;
 
-    @Schema(description = "Email автора объявления")
+    @Schema(description = "Email автора", example = "ivan@example.com")
     private String email;
 
-    @Schema(description = "Ссылка на изображение объявления")
+    @Schema(description = "Ссылка на изображение объявления", example = "http://example.com/image.jpg")
     private String image;
 
-    @Schema(description = "Телефон автора объявления")
+    @Schema(description = "Телефон автора", example = "+7 (999) 123-45-67")
     private String phone;
 
-    @Schema(description = "Цена объявления")
+    @Schema(description = "Цена объявления", example = "10000")
     private Integer price;
 
-    @Schema(description = "Заголовок объявления")
+    @Schema(description = "Заголовок объявления", example = "Продам велосипед")
     private String title;
+
 }
+

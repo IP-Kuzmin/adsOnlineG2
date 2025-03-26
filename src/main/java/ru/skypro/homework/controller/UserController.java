@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.service.UserService;
 
@@ -65,7 +64,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(updateUser));
     }
 
-    @PatchMapping(value = "/me/image", consumes = {"multipart/form-data"})
+    @PatchMapping("/me/image")
     @Operation(
             summary = "Обновление изображения пользователя",
             description = "Позволяет пользователю обновить своё изображение профиля."
@@ -74,9 +73,8 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Изображение успешно обновлено"),
             @ApiResponse(responseCode = "401", description = "Пользователь не авторизован")
     })
-    public ResponseEntity<Void> updateUserImage(@RequestPart("image") MultipartFile image) {
-        userService.updateUserImage(image);
+    public ResponseEntity<Void> updateUserImage(@RequestBody AvatarImage imageBody) {
+        userService.updateUserImage(imageBody);
         return ResponseEntity.ok().build();
     }
-
 }

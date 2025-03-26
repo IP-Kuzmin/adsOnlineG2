@@ -7,7 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-
     @Schema(description = "ID пользователя", example = "1")
     private Integer id;
 
@@ -23,7 +22,7 @@ public class User {
     @Schema(description = "Телефон пользователя", example = "+7 (999) 123-45-67")
     private String phone;
 
-    @Schema(description = "Роль пользователя", example = "USER")
+    @Schema(description = "Роль пользователя")
     private Role role;
 
     @Schema(description = "Ссылка на аватар", example = "http://example.com/image.jpg")

@@ -9,8 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Ads {
-
-    @Schema(description = "Общее количество объявлений", example = "42")
+    @Schema(description = "Общее количество объявлений")
     private Integer count;
 
     @Schema(description = "Список объявлений")

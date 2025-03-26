@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class CreateOrUpdateComment {
 
-    @Schema(description = "Текст комментария", example = "Очень интересное объявление!")
+    @Schema(description = "Текст комментария", example = "Отличный товар!")
     @NotBlank
     @Size(min = 8, max = 64)
     private String text;

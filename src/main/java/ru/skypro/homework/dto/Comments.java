@@ -9,8 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comments {
-
-    @Schema(description = "Количество комментариев", example = "5")
+    @Schema(description = "Количество комментариев")
     private Integer count;
 
     @Schema(description = "Список комментариев")
