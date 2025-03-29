@@ -5,17 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.exceptions.EmptyImageException;
 import ru.skypro.homework.exceptions.ImageAdsSaveException;
 import ru.skypro.homework.exceptions.ImageAvatarSaveException;
 import ru.skypro.homework.exceptions.IncompatibleMediaImageException;
 import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.enums.ImageSaveType;
+import ru.skypro.homework.service.enums.ImageValidationErrorType;
 
+import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +36,8 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public String saveImage(MultipartFile image, Long id, ImageSaveType type) {
-        if (image == null || image.isEmpty() || image.getOriginalFilename() == null) {
-            throw new EmptyImageException("Empty picture error in ID: " + id + " type: " +type.name());
+        if (imageMediaValidator(image).isPresent()) {
+            throw new IncompatibleMediaImageException("Empty picture error in ID: " + id + " type: " + type.name());
         }
 
         String extension = getExtensionFromContentType(image.getContentType());
@@ -75,19 +77,53 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public boolean imageValidator(String imagePath) {
+    public Optional<ImageValidationErrorType> imagePathValidator(String imagePath) {
+        if (imagePath == null || imagePath.isBlank()) {
+            return Optional.of(ImageValidationErrorType.PATH_IS_NULL_OR_BLANK);
+        }
+
         if (imagePath.startsWith("/")) {
             imagePath = imagePath.substring(1);
         }
 
-        Path fullPath = Path.of(imagePath.replaceAll("[:*?\"<>|]", "")
+        Path fullPath = Path.of(imagePath.replaceAll("[*?\"<>|]", "")
                 .replaceAll("/{2,}", "/"));
 
         if (!Files.exists(fullPath)) {
-            log.error("Недоступно: {}", fullPath);
-            return false;
+            return Optional.of(ImageValidationErrorType.FILE_NOT_FOUND);
         }
-        return true;
+
+        try (var is = Files.newInputStream(fullPath)) {
+            if (ImageIO.read(is) == null) {
+                return Optional.of(ImageValidationErrorType.INVALID_IMAGE_FORMAT);
+            }
+        } catch (IOException e) {
+            return Optional.of(ImageValidationErrorType.IO_ERROR);
+        }
+
+        return Optional.empty();
+    }
+
+
+    @Override
+    public Optional<ImageValidationErrorType> imageMediaValidator(MultipartFile file) {
+        if (file == null) {
+            return Optional.of(ImageValidationErrorType.FILE_IS_NULL);
+        }
+
+        if (file.isEmpty()) {
+            return Optional.of(ImageValidationErrorType.FILE_IS_EMPTY);
+        }
+
+        try (var is = file.getInputStream()) {
+            if (ImageIO.read(is) == null) {
+                return Optional.of(ImageValidationErrorType.INVALID_IMAGE_FORMAT);
+            }
+        } catch (IOException e) {
+            return Optional.of(ImageValidationErrorType.IO_ERROR);
+        }
+
+        return Optional.empty();
     }
 
     @Override

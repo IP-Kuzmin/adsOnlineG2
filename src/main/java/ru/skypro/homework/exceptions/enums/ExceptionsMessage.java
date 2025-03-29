@@ -1,4 +1,4 @@
-package ru.skypro.homework.exceptions;
+package ru.skypro.homework.exceptions.enums;
 
 import lombok.Getter;
 

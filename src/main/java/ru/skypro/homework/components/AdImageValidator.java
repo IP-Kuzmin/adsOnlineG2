@@ -38,7 +38,7 @@ public class AdImageValidator {
         int corrected = 0;
 
         for (AdModel ad : ads) {
-            if(!imageService.imageValidator(ad.getImage())) {
+            if(imageService.imagePathValidator(ad.getImage()).isPresent()) {
                 ad.setImage(imageService.getDefaultPhoto());
                 corrected++;
             };
