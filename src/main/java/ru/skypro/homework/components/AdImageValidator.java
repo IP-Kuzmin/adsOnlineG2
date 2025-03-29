@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.skypro.homework.models.AdModel;
 import ru.skypro.homework.repository.AdRepository;
+import ru.skypro.homework.service.ImageService;
 
 import javax.annotation.PostConstruct;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 @Component
@@ -24,6 +23,7 @@ public class AdImageValidator {
     private String defaultImage;
 
     private final AdRepository adRepository;
+    private final ImageService imageService;
 
     @PostConstruct
     public void checkImages() {
@@ -38,19 +38,10 @@ public class AdImageValidator {
         int corrected = 0;
 
         for (AdModel ad : ads) {
-            String rawPath = ad.getImage();
-            if (rawPath.startsWith("/")) {
-                rawPath = rawPath.substring(1);
-            }
-
-            Path fullPath = Path.of(rawPath.replaceAll("[:*?\"<>|]", "")
-                    .replaceAll("/{2,}", "/"));;
-
-            if (!Files.exists(fullPath)) {
-                log.warn("🖼️ Недоступно: {} → замена на {}", fullPath, imageDir + defaultImage);
-                ad.setImage(imageDir + defaultImage);
+            if(!imageService.imageValidator(ad.getImage())) {
+                ad.setImage(imageService.getDefaultPhoto());
                 corrected++;
-            }
+            };
         }
 
         if (corrected > 0) {

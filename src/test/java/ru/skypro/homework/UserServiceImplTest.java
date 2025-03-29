@@ -4,19 +4,20 @@ package ru.skypro.homework;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.springframework.mock.web.MockMultipartFile;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
 import ru.skypro.homework.dto.ChangeAndNewPassword;
+import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.exceptions.UserWrongPasswordResponseException;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.models.UserModel;
 import ru.skypro.homework.repository.UserRepository;
+import ru.skypro.homework.service.impl.ImageServiceImpl;
 import ru.skypro.homework.service.impl.UserServiceImpl;
 
 import java.nio.file.Path;
@@ -31,6 +32,13 @@ public class UserServiceImplTest {
     private UserRepository userRepository;
     private UserMapper userMapper;
     private PasswordEncoder passwordEncoder;
+    private ImageServiceImpl imageService;
+
+    private final UserModel adminUser = new UserModel(1L,"admin@example.com","Oleg","Olegov",
+            "+7 (777) 777-77-77", Role.ADMIN,"","");
+    private final UserModel easyUser = new UserModel(1L,"user@example.com","Anna","Olegov",
+            "+7 (777) 777-77-77", Role.USER,"","");
+
 
     @TempDir
     Path tempDir;
@@ -40,11 +48,8 @@ public class UserServiceImplTest {
         userRepository = mock(UserRepository.class);
         userMapper = mock(UserMapper.class);
         passwordEncoder = mock(PasswordEncoder.class);
-        userService = new UserServiceImpl(userRepository, userMapper, passwordEncoder);
-
-        ReflectionTestUtils.setField(userService, "imageDir", tempDir.toString());
-        ReflectionTestUtils.setField(userService, "isUseAbsolutePath", true);
-
+        imageService = mock(ImageServiceImpl.class);
+        userService = new UserServiceImpl(userRepository, userMapper, passwordEncoder, imageService );
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(new UsernamePasswordAuthenticationToken("user@example.com", null));
@@ -68,7 +73,10 @@ public class UserServiceImplTest {
         UpdateUser dto = new UpdateUser("Имя", "Фамилия", "+79991234567");
         UserModel userModel = new UserModel();
         userModel.setEmail("user@example.com");
+        userModel.setId(1L);
+        userModel.setRole(Role.ADMIN);
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(userModel));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(userModel));
         when(userMapper.toDto(userModel)).thenReturn(new User());
 
         User updated = userService.updateUser(dto);
@@ -100,28 +108,14 @@ public class UserServiceImplTest {
         UserModel userModel = new UserModel();
         userModel.setEmail("user@example.com");
         userModel.setPassword("encodedPass");
+        userModel.setId(1L);
+        userModel.setRole(Role.ADMIN);
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(userModel));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(userModel));
 
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(userModel));
         when(passwordEncoder.matches("wrongPass", "encodedPass")).thenReturn(false);
 
         assertThrows(UserWrongPasswordResponseException.class, () -> userService.setPassword(dto));
-    }
-
-    @Test
-    void updateUserImage_shouldSaveFileAndSetPath() throws Exception {
-        UserModel user = new UserModel();
-        user.setId(1L);
-        user.setEmail("user@example.com");
-
-        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
-        when(userRepository.save(any())).thenReturn(user);
-
-        MockMultipartFile image = new MockMultipartFile(
-                "image", "avatar.png", "image/png", new byte[]{1, 2, 3});
-
-        assertDoesNotThrow(() -> userService.updateUserImage(image));
-
-        assertNotNull(user.getImage());
-        assertTrue(user.getImage().contains("1.png"));
     }
 }
