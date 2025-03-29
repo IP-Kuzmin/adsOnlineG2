@@ -44,7 +44,7 @@ public class CommentServiceImplTest {
         commentService = new CommentServiceImpl(commentRepository, adRepository, userRepository, commentMapper);
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("user@example.com", null));
+                new UsernamePasswordAuthenticationToken("oleg@example.com", null));
     }
 
     @Test

@@ -23,14 +23,6 @@ public class CommentModel {
     @Schema(description = "Автор комментария")
     private UserModel author;
 
-    @Column(name = "author_image", length = 512)
-    @Schema(description = "Ссылка на аватар автора")
-    private String authorImage;
-
-    @Column(name = "author_first_name", length = 64)
-    @Schema(description = "Имя автора комментария")
-    private String authorFirstName;
-
     @Column(name = "created_at", nullable = false)
     @Schema(description = "Дата создания комментария (timestamp)")
     private Long createdAt;

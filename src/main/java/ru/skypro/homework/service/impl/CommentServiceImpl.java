@@ -6,9 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.Comment;
 import ru.skypro.homework.dto.Comments;
 import ru.skypro.homework.dto.CreateOrUpdateComment;
-import ru.skypro.homework.exceptions.AdNotFoundResponseException;
-import ru.skypro.homework.exceptions.CommentNotFoundResponseException;
-import ru.skypro.homework.exceptions.CurrentUserNotFoundResponseException;
+import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.exceptions.*;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.models.AdModel;
 import ru.skypro.homework.models.CommentModel;
@@ -32,6 +31,9 @@ public class CommentServiceImpl implements CommentService {
     private final AdRepository adRepository;
     private final UserRepository userRepository;
     private final CommentMapper commentMapper;
+
+    static private final String DENIED_ERROR = "Permission Comment denied - no admin privileges in Id: ";
+
 
     @Override
     public Comments getCommentsByAdId(Long adId) {
@@ -64,10 +66,14 @@ public class CommentServiceImpl implements CommentService {
         CommentModel comment = commentRepository.findByIdAndAdId(commentId, adId)
                 .orElseThrow(CommentNotFoundResponseException::new);
 
-        comment.setText(dto.getText());
-        CommentModel updated = commentRepository.save(comment);
-        log.info("Комментарий id={} обновлён", updated.getId());
-        return commentMapper.toDto(updated);
+        if(isOwner(commentId)) {
+            comment.setText(dto.getText());
+            CommentModel updated = commentRepository.save(comment);
+            log.info("Комментарий id={} обновлён", updated.getId());
+            return commentMapper.toDto(updated);
+        } else {
+            throw new PermissionDeniedUpdateResponseException(DENIED_ERROR + commentId);
+        }
     }
 
     @Override
@@ -75,13 +81,23 @@ public class CommentServiceImpl implements CommentService {
         if (!commentRepository.existsByIdAndAdId(commentId, adId)) {
             throw new CommentNotFoundResponseException();
         }
-        commentRepository.deleteById(commentId);
-        log.info("Комментарий id={} удалён из объявления id={}", commentId, adId);
+
+        if(isOwner(commentId)) {
+            commentRepository.deleteById(commentId);
+            log.info("Комментарий id={} удалён из объявления id={}", commentId, adId);
+        } else {
+            throw new PermissionDeniedDeleteResponseException(DENIED_ERROR + commentId);
+        }
     }
 
     private UserModel getCurrentUser() {
         String email = getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
                 .orElseThrow(CurrentUserNotFoundResponseException::new);
+    }
+
+    private boolean isOwner(Long id) {
+        CommentModel commentModel = commentRepository.findById(id).orElseThrow(CommentNotFoundResponseException::new);
+        return getCurrentUser().getRole() == Role.ADMIN || commentModel.getAuthor() == getCurrentUser();
     }
 }

@@ -1,60 +1,58 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
     <changeSet id="insert-demo-users" author="idol696">
         <insert tableName="users">
-            <column name="id" valueNumeric="1"/>
+            <column name="id" valueNumeric="3"/>
             <column name="email" value="oleg@example.com"/>
             <column name="first_name" value="Олег"/>
             <column name="last_name" value="Мудрый"/>
             <column name="phone" value="+7 (777) 777-77-77"/>
             <column name="role" value="ADMIN"/>
-            <column name="image" value="http://images/oleg.png"/>
+            <column name="image" value="/uploads/images/default/placeholder.jpg"/>
             <column name="password" value="$2a$10$hFcnDCyWHx1I8NC82bXZQuFuQZJ7tjbI8wG6b2GpE55a0OhP3zlSq"/>
         </insert>
         <insert tableName="users">
-            <column name="id" valueNumeric="2"/>
+            <column name="id" valueNumeric="4"/>
             <column name="email" value="user@example.com"/>
             <column name="first_name" value="Анна"/>
             <column name="last_name" value="Простая"/>
             <column name="phone" value="+7 (900) 123-45-67"/>
             <column name="role" value="USER"/>
-            <column name="image" value="http://images/anna.jpg"/>
+            <column name="image" value="/uploads/images/default/placeholder.jpg"/>
             <column name="password" value="$2a$10$hFcnDCyWHx1I8NC82bXZQuFuQZJ7tjbI8wG6b2GpE55a0OhP3zlSq"/>
         </insert>
     </changeSet>
     <changeSet id="insert-demo-ads" author="idol696">
         <insert tableName="ads">
-            <column name="id" valueNumeric="1"/>
-            <column name="author_id" valueNumeric="1"/>
+            <column name="id" valueNumeric="3"/>
+            <column name="author_id" valueNumeric="4"/>
             <column name="title" value="Продам самокат"/>
             <column name="price" valueNumeric="3000"/>
             <column name="description" value="Почти новый, красный"/>
-            <column name="image" value="http://ads/samokat.jpg"/>
+            <column name="image" value="/uploads/images/default/placeholder.jpg"/>
         </insert>
         <insert tableName="ads">
-            <column name="id" valueNumeric="2"/>
-            <column name="author_id" valueNumeric="2"/>
+            <column name="id" valueNumeric="4"/>
+            <column name="author_id" valueNumeric="3"/>
             <column name="title" value="Смартфон Xiaomi"/>
             <column name="price" valueNumeric="15000"/>
             <column name="description" value="Состояние отличное"/>
-            <column name="image" value="http://ads/phone.jpg"/>
+            <column name="image" value="/uploads/images/default/placeholder.jpg"/>
         </insert>
     </changeSet>
     <changeSet id="insert-demo-comments" author="idol696">
         <insert tableName="comments">
-            <column name="id" valueNumeric="1"/>
-            <column name="author_id" valueNumeric="2"/>
-            <column name="author_image" value="http://images/anna.jpg"/>
-            <column name="author_first_name" value="Анна"/>
+            <column name="id" valueNumeric="3"/>
+            <column name="author_id" valueNumeric="4"/>
             <column name="created_at" valueNumeric="1742727528198"/>
             <column name="text" value="А можно с доставкой?"/>
+            <column name="ad_id" valueNumeric="3"/>
         </insert>
         <insert tableName="comments">
-            <column name="id" valueNumeric="2"/>
-            <column name="author_id" valueNumeric="1"/>
-            <column name="author_image" value="http://images/oleg.png"/>
-            <column name="author_first_name" value="Олег"/>
+            <column name="id" valueNumeric="4"/>
+            <column name="author_id" valueNumeric="3"/>
             <column name="created_at" valueNumeric="1742727528198"/>
             <column name="text" value="Торг возможен?"/>
+            <column name="ad_id" valueNumeric="4"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

@@ -7,8 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.skypro.homework.dto.UpdateUser;
 
@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
 class UserControllerTest {
 
@@ -27,8 +28,6 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @Sql(scripts = {"/data-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/delete-test.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldGetUserInfo() throws Exception {
         mockMvc.perform(get("/users/me"))
@@ -36,8 +35,6 @@ class UserControllerTest {
     }
 
     @Test
-    @Sql(scripts = {"/data-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/delete-test.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldUpdateUserInfo() throws Exception {
         UpdateUser updateUser = new UpdateUser("John", "Doe", "+71234567890");
@@ -49,8 +46,6 @@ class UserControllerTest {
     }
 
     @Test
-    @Sql(scripts = {"/data-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/delete-test.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldUpdateUserInfo_BadRequest() throws Exception {
         UpdateUser updateUser = new UpdateUser("John", "Doe", "+11234567890");

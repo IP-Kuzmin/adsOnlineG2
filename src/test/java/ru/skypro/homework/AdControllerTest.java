@@ -6,19 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.skypro.homework.dto.CreateOrUpdateAd;
 import ru.skypro.homework.service.impl.AdServiceImpl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
 class AdControllerTest {
 
@@ -39,15 +42,13 @@ class AdControllerTest {
     }
 
     @Test
-    @Sql(scripts = {"/data-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/delete-test.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldCreateAdWithMultipart() throws Exception {
         MockMultipartFile properties = new MockMultipartFile(
                 "properties",
                 "",
                 "application/json",
-                objectMapper.writeValueAsBytes(new CreateOrUpdateAd("Bicycle", 1000, "Almost new bike"))
+                objectMapper.writeValueAsBytes(new CreateOrUpdateAd( "Bicycle", 1000, "Almost new bike"))
         );
 
         MockMultipartFile image = new MockMultipartFile(
@@ -67,25 +68,43 @@ class AdControllerTest {
                 .andExpect(status().isCreated());
     }
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @Test
-    @Sql(scripts = {"/data-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/delete-test.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void shouldHaveTwoUsers() {
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM users", Integer.class
+        );
+        assertThat(count).isEqualTo(2);
+    }
+
+    @Test
     @WithMockUser(username = "user@example.com", roles = {"USER"})
-    void shouldUpdateAd() throws Exception {
+    void shouldUpdateAd_NoAdmin() throws Exception {
         CreateOrUpdateAd ad = new CreateOrUpdateAd("Updated Bike", 1200, "Updated description");
 
-        mockMvc.perform(patch("/ads/11")
+        mockMvc.perform(patch("/ads/4")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(ad)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(username = "oleg@example.com", roles = {"ADMIN"})
+    void shouldUpdateAd_Admin() throws Exception {
+        CreateOrUpdateAd ad = new CreateOrUpdateAd("Updated Bike", 1200, "Updated description");
+
+        mockMvc.perform(patch("/ads/4")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(ad)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @Sql(scripts = {"/data-test.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"/delete-test.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldDeleteAd() throws Exception {
-        mockMvc.perform(delete("/ads/11"))
+        mockMvc.perform(delete("/ads/3"))
                 .andExpect(status().isNoContent());
     }
 }
