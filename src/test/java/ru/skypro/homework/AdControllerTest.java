@@ -1,6 +1,9 @@
 package ru.skypro.homework;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import liquibase.exception.LiquibaseException;
+import liquibase.integration.spring.SpringLiquibase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,11 +12,14 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.skypro.homework.dto.CreateOrUpdateAd;
 import ru.skypro.homework.service.impl.AdServiceImpl;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -21,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ActiveProfiles("test")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
 class AdControllerTest {
 
@@ -34,6 +39,18 @@ class AdControllerTest {
     @Autowired
     private AdServiceImpl adService;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private SpringLiquibase liquibase;
+
+    @BeforeEach
+    void setUpDatabase() throws LiquibaseException {
+        jdbcTemplate.execute("DROP ALL OBJECTS");
+        liquibase.afterPropertiesSet();
+    }
+
     @Test
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldGetAllAds() throws Exception {
@@ -44,6 +61,12 @@ class AdControllerTest {
     @Test
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void shouldCreateAdWithMultipart() throws Exception {
+
+        BufferedImage img = new BufferedImage(5, 5, BufferedImage.TYPE_INT_RGB);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        boolean result = ImageIO.write(img, "jpg", baos);
+        byte[] jpegBytes = baos.toByteArray();
+
         MockMultipartFile properties = new MockMultipartFile(
                 "properties",
                 "",
@@ -55,7 +78,7 @@ class AdControllerTest {
                 "image",
                 "bike.jpg",
                 "image/jpeg",
-                "fake-image-content".getBytes()
+                jpegBytes
         );
 
         mockMvc.perform(multipart("/ads")
@@ -67,9 +90,6 @@ class AdControllerTest {
                         }))
                 .andExpect(status().isCreated());
     }
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Test
     void shouldHaveTwoUsers() {

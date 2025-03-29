@@ -1,3 +1,0 @@
-DELETE FROM comments;
-DELETE FROM ads;
-DELETE FROM users;

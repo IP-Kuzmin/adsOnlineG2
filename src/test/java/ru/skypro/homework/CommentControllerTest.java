@@ -1,14 +1,16 @@
 package ru.skypro.homework;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Disabled;
+import liquibase.exception.LiquibaseException;
+import liquibase.integration.spring.SpringLiquibase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.skypro.homework.dto.CreateOrUpdateComment;
@@ -19,9 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ActiveProfiles("test")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
-@Disabled
 class CommentControllerTest {
 
     @Autowired
@@ -32,6 +32,18 @@ class CommentControllerTest {
 
     @Autowired
     private AdServiceImpl adService;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private SpringLiquibase liquibase;
+
+    @BeforeEach
+    void setUpDatabase() throws LiquibaseException {
+        jdbcTemplate.execute("DROP ALL OBJECTS");
+        liquibase.afterPropertiesSet();
+    }
 
     @Test
     @WithMockUser(username = "oleg@example.com", roles = {"ADMIN"})

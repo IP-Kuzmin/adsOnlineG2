@@ -60,7 +60,7 @@ public class AdServiceImpl implements AdService {
         AdModel model = adRepository.findById(id)
                 .orElseThrow(AdNotFoundResponseException::new);
         log.debug("Объявление по id {} найдено", id);
-        if (!imageService.imageValidator(model.getImage())) {
+        if (imageService.imagePathValidator(model.getImage()).isPresent()) {
             throw new ImageNotFoundException("Image " + model.getImage() + " not found on Ad Id: " + id);
         }
         return adMapper.toExtendedDto(model);

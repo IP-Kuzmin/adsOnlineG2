@@ -8,15 +8,13 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.skypro.homework.dto.*;
-import ru.skypro.homework.exceptions.AdNotFoundResponseException;
-import ru.skypro.homework.exceptions.CurrentUserNotFoundResponseException;
-import ru.skypro.homework.exceptions.PermissionDeniedDeleteResponseException;
-import ru.skypro.homework.exceptions.PermissionDeniedUpdateResponseException;
+import ru.skypro.homework.exceptions.*;
 import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.models.AdModel;
 import ru.skypro.homework.models.UserModel;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.UserRepository;
+import ru.skypro.homework.service.enums.ImageValidationErrorType;
 import ru.skypro.homework.service.impl.AdServiceImpl;
 import ru.skypro.homework.service.impl.ImageServiceImpl;
 
@@ -88,7 +86,7 @@ public class AdServiceImplTest {
         model.setId(1L);
 
         when(adRepository.findById(1L)).thenReturn(Optional.of(model));
-        when(imageService.imageValidator(any())).thenReturn(true);
+        when(imageService.imagePathValidator(any())).thenReturn(Optional.empty());
         when(adMapper.toExtendedDto(model)).thenReturn(new ExtendedAd());
 
         assertNotNull(adService.getAdById(1L));
@@ -185,6 +183,39 @@ public class AdServiceImplTest {
         doNothing().when(adRepository).deleteById(1L);
         adService.deleteAd(1L);
         verify(adRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void getAdById_shouldThrow_whenImageMissing() {
+        AdModel model = new AdModel();
+        model.setId(1L);
+        model.setImage("some/missing/image.jpg");
+
+        when(adRepository.findById(1L)).thenReturn(Optional.of(model));
+        when(imageService.imagePathValidator(any())).thenReturn(Optional.of(ImageValidationErrorType.FILE_NOT_FOUND));
+
+        assertThrows(ImageNotFoundException.class, () -> adService.getAdById(1L));
+    }
+
+    @Test
+    void updateAd_shouldThrow_whenNotOwner() {
+        AdModel model = new AdModel();
+        model.setAuthor(new UserModel(999L, "another@example.com", "", "", "", Role.USER, "", ""));
+        CreateOrUpdateAd dto = new CreateOrUpdateAd("Title", 100, "desc");
+
+        when(adRepository.findById(1L)).thenReturn(Optional.of(model));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(easyUser));
+
+        assertThrows(PermissionDeniedUpdateResponseException.class, () -> adService.updateAd(1L, dto));
+    }
+
+    @Test
+    void createAd_shouldThrow_whenUserNotFound() {
+        CreateOrUpdateAd dto = new CreateOrUpdateAd("Title", 100, "desc");
+        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
+
+        MockMultipartFile image = new MockMultipartFile("image", "test.jpg", "image/jpeg", new byte[]{1});
+        assertThrows(CurrentUserNotFoundResponseException.class, () -> adService.createAd(dto, image));
     }
 
 
