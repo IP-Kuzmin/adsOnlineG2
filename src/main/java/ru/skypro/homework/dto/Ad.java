@@ -7,13 +7,19 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Ad {
-    @Schema(description = "ID объявления", example = "1")
-    private Integer id;
+
+    @Schema(description = "ID объявления")
+    private Integer pk;
+
+    @Schema(description = "ID автора")
+    private Integer author;
+
+    @Schema(description = "Ссылка на изображение объявления")
+    private String image;
+
+    @Schema(description = "Цена объявления")
+    private Integer price;
 
     @Schema(description = "Заголовок объявления")
     private String title;
-
-    @Schema(description = "Описание объявления")
-    private String description;
 }
-

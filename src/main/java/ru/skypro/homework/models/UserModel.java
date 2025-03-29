@@ -6,7 +6,6 @@ import ru.skypro.homework.dto.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -17,39 +16,41 @@ public class UserModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false)
     @Schema(description = "ID пользователя")
-    private Integer id;
+    private Long id;
 
     @Email
     @NotBlank
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 255)
     @Schema(description = "Email пользователя")
     private String email;
 
     @Size(min = 2, max = 16)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 16)
     @Schema(description = "Имя пользователя")
     private String firstName;
 
     @Size(min = 2, max = 16)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 16)
     @Schema(description = "Фамилия пользователя")
     private String lastName;
 
     @Pattern(regexp = "\\+7\\s?\\(?\\d{3}\\)?\\s?\\d{3}-?\\d{2}-?\\d{2}")
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     @Schema(description = "Телефон пользователя")
     private String phone;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10)
     @Schema(description = "Роль пользователя")
     private Role role;
 
+    @Column(length = 512)
     @Schema(description = "Ссылка на аватар пользователя")
     private String image;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<AdModel> ads;
+    @Column(nullable = false, length = 64)
+    @Schema(description = "Хешированный пароль (MD5)")
+    private String password;
 }
-

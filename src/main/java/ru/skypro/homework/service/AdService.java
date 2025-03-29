@@ -1,19 +1,20 @@
 package ru.skypro.homework.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 
 public interface AdService {
     Ads getAdsCount();
 
-    Ad createAd(CreateOrUpdateAd ad);
+    Ad createAd(CreateOrUpdateAd ad, MultipartFile image);
 
-    ExtendedAd getAdById(Integer id);
+    ExtendedAd getAdById(Long id);
 
-    Ad updateAd(Integer id, CreateOrUpdateAd ad);
+    Ad updateAd(Long id, CreateOrUpdateAd ad);
 
-    void deleteAd(Integer id);
+    void deleteAd(Long id);
 
     Ads getUserAdsCount();
 
-    void updateAdImage(Integer id, AdsImage imageBody);
+    void updateAdImage(Long id, MultipartFile image);
 }
